@@ -1,0 +1,43 @@
+plugins {
+    id 'java-library'
+    id 'io.spring.dependency-management' version '1.1.6' apply false
+    id 'org.springframework.boot' version '3.3.5' apply false
+}
+
+allprojects {
+    group = 'io.github.project'
+    version = '0.1.0-SNAPSHOT'
+}
+
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'io.spring.dependency-management'
+
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.3.5'
+            mavenBom 'org.junit:junit-bom:5.10.5'
+            mavenBom 'org.testcontainers:testcontainers-bom:2.0.5'
+        }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 21
+    }
+
+    dependencies {
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testRuntimeOnly 'org.apache.commons:commons-lang3:3.20.0'
+    }
+
+    test {
+        useJUnitPlatform()
+        if (!System.getenv().containsKey('DOCKER_HOST')) {
+            def dockerDesktopSocket = file("${System.getProperty('user.home')}/.docker/run/docker.sock")
+            if (dockerDesktopSocket.exists()) {
+                environment 'DOCKER_HOST', "unix://${dockerDesktopSocket.absolutePath}"
+            }
+        }
+    }
+}

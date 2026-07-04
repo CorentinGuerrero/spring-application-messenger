@@ -1,0 +1,8 @@
+dependencies {
+    api project(':messenger-core')
+    api 'org.springframework:spring-context'
+    api 'org.springframework:spring-tx'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.assertj:assertj-core'
+}

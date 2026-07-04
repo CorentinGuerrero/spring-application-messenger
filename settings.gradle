@@ -1,0 +1,24 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+    }
+}
+
+rootProject.name = 'spring-application-messenger'
+
+include 'messenger-core'
+include 'messenger-spring'
+include 'messenger-spring-boot-starter'
+include 'messenger-transport-rabbitmq'
+include 'messenger-transport-kafka'
+include 'messenger-transport-redis'
+include 'messenger-transport-jdbc-outbox'
+include 'spring-messenger-example'
