@@ -1,0 +1,82 @@
+{
+  "groups": [
+    {
+      "name": "messenger",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties"
+    },
+    {
+      "name": "messenger.events",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties$Events",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceMethod": "public io.github.project.messenger.autoconfigure.MessengerProperties.Events getEvents() "
+    },
+    {
+      "name": "messenger.observability",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties$Observability",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceMethod": "public io.github.project.messenger.autoconfigure.MessengerProperties.Observability getObservability() "
+    },
+    {
+      "name": "messenger.routing",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties$Routing",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceMethod": "public io.github.project.messenger.autoconfigure.MessengerProperties.Routing getRouting() "
+    },
+    {
+      "name": "messenger.scan",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties$Scan",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceMethod": "public io.github.project.messenger.autoconfigure.MessengerProperties.Scan getScan() "
+    },
+    {
+      "name": "messenger.validation",
+      "type": "io.github.project.messenger.autoconfigure.MessengerProperties$Validation",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties",
+      "sourceMethod": "public io.github.project.messenger.autoconfigure.MessengerProperties.Validation getValidation() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "messenger.default-transport",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties"
+    },
+    {
+      "name": "messenger.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties"
+    },
+    {
+      "name": "messenger.events.error-strategy",
+      "type": "io.github.project.messenger.dispatch.EventErrorStrategy",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Events"
+    },
+    {
+      "name": "messenger.observability.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Observability"
+    },
+    {
+      "name": "messenger.routing.commands",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Routing"
+    },
+    {
+      "name": "messenger.routing.events",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Routing"
+    },
+    {
+      "name": "messenger.scan.base-packages",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Scan"
+    },
+    {
+      "name": "messenger.validation.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.autoconfigure.MessengerProperties$Validation"
+    }
+  ],
+  "hints": []
+}

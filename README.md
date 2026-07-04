@@ -582,17 +582,56 @@ messenger:
   routing:
     events:
       UserRegistered: kafka
+      UserEmailChanged: kafka
+      OrderCreated: kafka
+      PaymentCaptured: kafka
   transports:
     kafka:
       enabled: true
       topic-prefix: app
       topics:
         UserRegistered: app.user.events
+        UserEmailChanged: app.user.events
+        OrderCreated: app.order.events
+        PaymentCaptured: app.payment.events
       consumer:
         enabled: true
-        topics: app.user.events
+        topics: app.user.events,app.order.events,app.payment.events
         group-id: app-messenger
 ```
+
+Multiple message types can point to the same topic:
+
+```yaml
+messenger:
+  routing:
+    events:
+      UserRegistered: kafka
+      UserEmailChanged: kafka
+      UserDeleted: kafka
+  transports:
+    kafka:
+      topics:
+        UserRegistered: app.user.events
+        UserEmailChanged: app.user.events
+        UserDeleted: app.user.events
+```
+
+You can also route all events to Kafka with a wildcard:
+
+```yaml
+messenger:
+  routing:
+    events:
+      "*": kafka
+  transports:
+    kafka:
+      topic-prefix: app
+      topics:
+        UserRegistered: app.user.events
+```
+
+With this setup, `UserRegistered` uses `app.user.events`; other events fall back to the default topic format.
 
 Default topic format:
 

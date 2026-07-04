@@ -1,0 +1,73 @@
+{
+  "groups": [
+    {
+      "name": "messenger.transports.jdbc-outbox",
+      "type": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher",
+      "type": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties",
+      "sourceMethod": "public io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties.Publisher getPublisher() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "messenger.transports.jdbc-outbox.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.initial-status",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.initialize-schema",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.batch-size",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.max-attempts",
+      "type": "java.lang.Integer",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.poll-interval",
+      "type": "java.time.Duration",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.retry-delay",
+      "type": "java.time.Duration",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.routes",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.publisher.target-transport",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties$Publisher"
+    },
+    {
+      "name": "messenger.transports.jdbc-outbox.table-name",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.jdbcoutbox.JdbcOutboxTransportProperties"
+    }
+  ],
+  "hints": []
+}

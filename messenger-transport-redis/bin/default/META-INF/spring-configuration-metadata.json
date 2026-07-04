@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "name": "messenger.transports.redis",
+      "type": "io.github.project.messenger.transport.redis.RedisTransportProperties",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties"
+    },
+    {
+      "name": "messenger.transports.redis.consumer",
+      "type": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties",
+      "sourceMethod": "public io.github.project.messenger.transport.redis.RedisTransportProperties.Consumer getConsumer() "
+    }
+  ],
+  "properties": [
+    {
+      "name": "messenger.transports.redis.consumer.consumer-name",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer"
+    },
+    {
+      "name": "messenger.transports.redis.consumer.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer"
+    },
+    {
+      "name": "messenger.transports.redis.consumer.group",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer"
+    },
+    {
+      "name": "messenger.transports.redis.consumer.poll-timeout",
+      "type": "java.time.Duration",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer"
+    },
+    {
+      "name": "messenger.transports.redis.consumer.streams",
+      "type": "java.util.List<java.lang.String>",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties$Consumer"
+    },
+    {
+      "name": "messenger.transports.redis.enabled",
+      "type": "java.lang.Boolean",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties"
+    },
+    {
+      "name": "messenger.transports.redis.stream-prefix",
+      "type": "java.lang.String",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties"
+    },
+    {
+      "name": "messenger.transports.redis.streams",
+      "type": "java.util.Map<java.lang.String,java.lang.String>",
+      "sourceType": "io.github.project.messenger.transport.redis.RedisTransportProperties"
+    }
+  ],
+  "hints": []
+}
