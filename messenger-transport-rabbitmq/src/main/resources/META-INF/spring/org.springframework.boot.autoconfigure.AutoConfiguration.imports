@@ -1,1 +1,1 @@
-io.github.project.messenger.transport.rabbitmq.RabbitMqTransportAutoConfiguration
+io.github.corentinguerrero.messenger.transport.rabbitmq.RabbitMqTransportAutoConfiguration

@@ -1,1 +1,1 @@
-io.github.project.messenger.transport.redis.RedisTransportAutoConfiguration
+io.github.corentinguerrero.messenger.transport.redis.RedisTransportAutoConfiguration

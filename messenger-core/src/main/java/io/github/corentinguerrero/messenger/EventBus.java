@@ -1,0 +1,8 @@
+package io.github.corentinguerrero.messenger;
+
+import io.github.corentinguerrero.messenger.api.PublicApi;
+
+@PublicApi
+public interface EventBus {
+    void publish(Event event);
+}

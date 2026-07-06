@@ -1,1 +1,1 @@
-io.github.project.messenger.transport.kafka.KafkaTransportAutoConfiguration
+io.github.corentinguerrero.messenger.transport.kafka.KafkaTransportAutoConfiguration

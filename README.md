@@ -63,6 +63,7 @@ Implemented:
 - consumer-side dispatch for RabbitMQ and Kafka
 - managed Redis Streams listener with consumer group ACK
 - managed JDBC outbox publisher with retry and final failure status
+- `messenger-test` module with fake buses, event recorder, assertions, and handler helpers
 - Gradle multi-module build
 
 Not implemented yet:
@@ -70,14 +71,13 @@ Not implemented yet:
 - DLQ handling
 - serialization strategy customization
 - Micrometer and tracing integration
-- test utility module
 - async local executor dispatch
 
 ## Requirements
 
 - Java 21 or newer
 - Gradle wrapper included
-- Spring Boot 3.3.x alignment through the Spring Boot dependency BOM
+- Spring Boot 3.5.x alignment through the Spring Boot dependency BOM
 
 ## Build
 
@@ -104,37 +104,37 @@ The library now separates three surfaces:
 Stable application API:
 
 ```text
-io.github.project.messenger.Command<R>
-io.github.project.messenger.Query<R>
-io.github.project.messenger.Event
-io.github.project.messenger.CommandBus
-io.github.project.messenger.QueryBus
-io.github.project.messenger.EventBus
-io.github.project.messenger.envelope.MessageEnvelope
-io.github.project.messenger.envelope.MessageMetadata
-io.github.project.messenger.middleware.MessageMiddleware
-io.github.project.messenger.dispatch.EventErrorStrategy
-io.github.project.messenger.transport.TransportNames
+io.github.corentinguerrero.messenger.Command<R>
+io.github.corentinguerrero.messenger.Query<R>
+io.github.corentinguerrero.messenger.Event
+io.github.corentinguerrero.messenger.CommandBus
+io.github.corentinguerrero.messenger.QueryBus
+io.github.corentinguerrero.messenger.EventBus
+io.github.corentinguerrero.messenger.envelope.MessageEnvelope
+io.github.corentinguerrero.messenger.envelope.MessageMetadata
+io.github.corentinguerrero.messenger.middleware.MessageMiddleware
+io.github.corentinguerrero.messenger.dispatch.EventErrorStrategy
+io.github.corentinguerrero.messenger.transport.TransportNames
 ```
 
 Stable Spring API:
 
 ```text
-io.github.project.messenger.spring.CommandHandler
-io.github.project.messenger.spring.QueryHandler
-io.github.project.messenger.spring.EventHandler
-io.github.project.messenger.spring.TransactionalCommandHandler
+io.github.corentinguerrero.messenger.spring.CommandHandler
+io.github.corentinguerrero.messenger.spring.QueryHandler
+io.github.corentinguerrero.messenger.spring.EventHandler
+io.github.corentinguerrero.messenger.spring.TransactionalCommandHandler
 ```
 
 Stable SPI:
 
 ```text
-io.github.project.messenger.handler.HandlerRegistry
-io.github.project.messenger.handler.MessageHandler
-io.github.project.messenger.routing.MessageRouter
-io.github.project.messenger.routing.MessageRoute
-io.github.project.messenger.transport.MessageTransport
-io.github.project.messenger.transport.TransportMessage
+io.github.corentinguerrero.messenger.handler.HandlerRegistry
+io.github.corentinguerrero.messenger.handler.MessageHandler
+io.github.corentinguerrero.messenger.routing.MessageRouter
+io.github.corentinguerrero.messenger.routing.MessageRoute
+io.github.corentinguerrero.messenger.transport.MessageTransport
+io.github.corentinguerrero.messenger.transport.TransportMessage
 ```
 
 Stable transport names are exposed through `TransportNames`:
@@ -161,6 +161,7 @@ The modules include API contract tests that fail when these signatures, enum val
 | `messenger-transport-kafka` | Producer-side Kafka transport using `KafkaTemplate<String, Object>`. |
 | `messenger-transport-redis` | Producer-side Redis Streams transport using `RedisTemplate<String, Object>`. |
 | `messenger-transport-jdbc-outbox` | Producer-side JDBC outbox transport using `JdbcTemplate`. |
+| `messenger-test` | Test helpers: fake command/query buses, recording event bus, event assertions, handler invoker. |
 | `spring-messenger-example` | Concrete Spring Boot sample application using command, query, and event handlers. |
 
 ## Installation
@@ -171,7 +172,7 @@ For a future published release, a typical application would use:
 
 ```groovy
 dependencies {
-    implementation 'io.github.project:spring-application-messenger-starter:0.1.0'
+    implementation 'io.github.corentinguerrero:spring-application-messenger-starter:0.1.0'
 }
 ```
 
@@ -179,12 +180,65 @@ Add transport modules only when needed:
 
 ```groovy
 dependencies {
-    implementation 'io.github.project:spring-application-messenger-starter:0.1.0'
-    implementation 'io.github.project:messenger-transport-rabbitmq:0.1.0'
-    implementation 'io.github.project:messenger-transport-kafka:0.1.0'
-    implementation 'io.github.project:messenger-transport-redis:0.1.0'
-    implementation 'io.github.project:messenger-transport-jdbc-outbox:0.1.0'
+    implementation 'io.github.corentinguerrero:spring-application-messenger-starter:0.1.0'
+    implementation 'io.github.corentinguerrero:messenger-transport-rabbitmq:0.1.0'
+    implementation 'io.github.corentinguerrero:messenger-transport-kafka:0.1.0'
+    implementation 'io.github.corentinguerrero:messenger-transport-redis:0.1.0'
+    implementation 'io.github.corentinguerrero:messenger-transport-jdbc-outbox:0.1.0'
+    testImplementation 'io.github.corentinguerrero:messenger-test:0.1.0'
 }
+```
+
+## Testing Helpers
+
+The `messenger-test` module is meant for applications using the library. It is different from `spring-messenger-example`: the example is a runnable demo app, while `messenger-test` gives reusable test utilities for your own codebase.
+
+Gradle:
+
+```groovy
+dependencies {
+    testImplementation 'io.github.corentinguerrero:messenger-test:0.1.0'
+}
+```
+
+Record events published by a handler:
+
+```java
+import io.github.corentinguerrero.messenger.test.RecordingEventBus;
+
+import static io.github.corentinguerrero.messenger.test.MessengerAssertions.assertThat;
+
+RecordingEventBus eventBus = new RecordingEventBus();
+RegisterUserHandler handler = new RegisterUserHandler(repository, eventBus);
+
+handler.handle(new RegisterUser("john@example.com", "John"));
+
+assertThat(eventBus)
+    .hasPublished(UserRegistered.class)
+    .hasPublishedSatisfying(UserRegistered.class, event ->
+        assertEquals("john@example.com", event.email())
+    );
+```
+
+Use fake buses when testing an application service:
+
+```java
+FakeCommandBus commandBus = new FakeCommandBus()
+    .whenDispatchingReturn(RegisterUser.class, new UserId("user-1"));
+
+UserId userId = commandBus.dispatch(new RegisterUser("john@example.com", "John"));
+
+assertEquals(new UserId("user-1"), userId);
+assertEquals(1, commandBus.dispatchedCommandsOfType(RegisterUser.class).size());
+```
+
+Invoke a handler without Spring:
+
+```java
+UserId userId = HandlerTestSupport.invokeCommand(
+    new RegisterUserHandler(repository, eventBus),
+    new RegisterUser("john@example.com", "John")
+);
 ```
 
 ## Example Application
@@ -209,18 +263,39 @@ Run it with:
 
 The runnable app uses an in-memory H2 database in PostgreSQL compatibility mode so it starts without external services. The integration test `SpringMessengerExamplePostgresContainerTest` runs the same flow against PostgreSQL with Testcontainers.
 
-The relevant files are:
+The example is intentionally split by responsibility:
 
 ```text
-spring-messenger-example/src/main/java/io/github/project/messenger/example/RegisterUser.java
-spring-messenger-example/src/main/java/io/github/project/messenger/example/RegisterUserHandler.java
-spring-messenger-example/src/main/java/io/github/project/messenger/example/UserRegistered.java
-spring-messenger-example/src/main/java/io/github/project/messenger/example/GetUser.java
-spring-messenger-example/src/main/java/io/github/project/messenger/example/GetUserHandler.java
-spring-messenger-example/src/main/java/io/github/project/messenger/example/UserRepository.java
+spring-messenger-example/src/main/java/io/github/corentinguerrero/messenger/example
+|-- application
+|   |-- command
+|   |   `-- RegisterUser.java
+|   |-- query
+|   |   `-- GetUser.java
+|   `-- handler
+|       |-- RegisterUserHandler.java
+|       |-- GetUserHandler.java
+|       `-- SendWelcomeEmailHandler.java
+|-- domain
+|   |-- event
+|   |   `-- UserRegistered.java
+|   `-- model
+|       |-- User.java
+|       |-- UserId.java
+|       `-- UserView.java
+|-- infrastructure
+|   `-- persistence
+|       `-- UserRepository.java
+|-- ExampleRunner.java
+`-- SpringMessengerExampleApplication.java
+```
+
+Database and integration test files:
+
+```text
 spring-messenger-example/src/main/resources/application.yml
 spring-messenger-example/src/main/resources/schema.sql
-spring-messenger-example/src/test/java/io/github/project/messenger/example/SpringMessengerExamplePostgresContainerTest.java
+spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExamplePostgresContainerTest.java
 ```
 
 ## Core Concepts
@@ -987,7 +1062,6 @@ Near-term:
 
 - serialization abstraction
 - retry and DLQ configuration
-- `messenger-test` module with fake bus and event recorder
 - Micrometer metrics
 - structured logging and tracing hooks
 
