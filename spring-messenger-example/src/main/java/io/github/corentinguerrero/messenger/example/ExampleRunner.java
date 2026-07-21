@@ -2,7 +2,9 @@ package io.github.corentinguerrero.messenger.example;
 
 import io.github.corentinguerrero.messenger.CommandBus;
 import io.github.corentinguerrero.messenger.QueryBus;
+import io.github.corentinguerrero.messenger.example.application.command.RebuildUserSearchIndex;
 import io.github.corentinguerrero.messenger.example.application.command.RegisterUser;
+import io.github.corentinguerrero.messenger.example.application.command.SendWelcomeEmail;
 import io.github.corentinguerrero.messenger.example.application.query.GetUser;
 import io.github.corentinguerrero.messenger.example.domain.model.UserId;
 import io.github.corentinguerrero.messenger.example.domain.model.UserView;
@@ -41,6 +43,10 @@ public class ExampleRunner implements CommandLineRunner {
         System.out.println("Outbox messages published: " + outboxPublisher.publishOnce());
         System.out.println("Messages waiting in outbox after publisher: " + outboxCount("PENDING"));
         System.out.println("Messages published from outbox: " + outboxCount("PUBLISHED"));
+
+        commandBus.dispatch(new SendWelcomeEmail(userId, user.email()));
+        commandBus.dispatch(new RebuildUserSearchIndex(userId));
+        System.out.println("Async commands sent to RabbitMQ and Kafka");
     }
 
     private int outboxCount(String status) {

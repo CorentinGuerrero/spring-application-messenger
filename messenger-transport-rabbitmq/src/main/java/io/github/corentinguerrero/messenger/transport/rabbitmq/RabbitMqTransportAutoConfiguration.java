@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.corentinguerrero.messenger.dispatch.IncomingMessageDispatcher;
 import io.github.corentinguerrero.messenger.transport.MessageTransport;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -12,10 +14,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-@AutoConfiguration
+@AutoConfiguration(after = RabbitAutoConfiguration.class)
 @ConditionalOnClass(RabbitTemplate.class)
 @EnableConfigurationProperties(RabbitMqTransportProperties.class)
 @ConditionalOnProperty(prefix = "messenger.transports.rabbitmq", name = "enabled", havingValue = "true", matchIfMissing = true)
+@EnableRabbit
 public class RabbitMqTransportAutoConfiguration {
     @Bean
     @ConditionalOnBean(RabbitTemplate.class)

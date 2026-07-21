@@ -6,9 +6,27 @@ messenger:
   routing:
     commands:
       RegisterUser: sync
+      SendWelcomeEmail: rabbitmq
+      RebuildUserSearchIndex: kafka
     events:
       UserRegistered: pg-outbox
   transports:
+    rabbitmq:
+      enabled: true
+      exchange: messenger.example
+      routing-keys:
+        SendWelcomeEmail: mail.welcome
+      consumer:
+        enabled: true
+        queues: messenger.example.mail
+    kafka:
+      enabled: true
+      topics:
+        RebuildUserSearchIndex: messenger.example.user-index
+      consumer:
+        enabled: true
+        topics: messenger.example.user-index
+        group-id: messenger-example
     jdbc-outbox:
       enabled: true
       initialize-schema: true
@@ -28,3 +46,18 @@ spring:
   sql:
     init:
       mode: always
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: io.github.corentinguerrero.messenger.transport.TransportMessage

@@ -245,15 +245,36 @@ UserId userId = HandlerTestSupport.invokeCommand(
 
 The repository includes a runnable Spring Boot application in `spring-messenger-example`.
 
-It demonstrates a database-backed user registration flow:
+It demonstrates four application-level flows:
 
-- `RegisterUser` is dispatched through `CommandBus`
-- `RegisterUserHandler` stores the user in `app_users`
-- `RegisterUserHandler` publishes `UserRegistered`
-- routing sends `UserRegistered` to `pg-outbox`
-- the JDBC outbox transport stores the event in `messenger_outbox`
-- `GetUser` is answered through `QueryBus`
+- sync command/query: `RegisterUser` stores a user, then `GetUser` reads it back
+- transactional outbox: `UserRegistered` is routed to `pg-outbox` and stored in `messenger_outbox`
+- RabbitMQ async command: `SendWelcomeEmail` is sent to RabbitMQ, consumed, then dispatched to its handler
+- Kafka/Redpanda async command: `RebuildUserSearchIndex` is sent to Redpanda, consumed, then dispatched to its handler
 - Bean Validation rejects invalid commands before the handler is called
+
+```mermaid
+flowchart LR
+    Register["RegisterUser command"] --> CommandBus["CommandBus"]
+    CommandBus --> RegisterHandler["RegisterUserHandler"]
+    RegisterHandler --> Users[("app_users")]
+    RegisterHandler --> EventBus["EventBus"]
+    EventBus --> Outbox[("messenger_outbox")]
+    Outbox --> Publisher["JdbcOutboxPublisher"]
+    Publisher --> WelcomeEventHandler["SendWelcomeEmailHandler"]
+
+    Get["GetUser query"] --> QueryBus["QueryBus"]
+    QueryBus --> GetHandler["GetUserHandler"]
+    GetHandler --> Users
+
+    WelcomeCommand["SendWelcomeEmail command"] --> Rabbit["RabbitMQ queue"]
+    Rabbit --> RabbitConsumer["RabbitMQ consumer"]
+    RabbitConsumer --> WelcomeCommandHandler["SendWelcomeEmailCommandHandler"]
+
+    Reindex["RebuildUserSearchIndex command"] --> Kafka["Redpanda/Kafka topic"]
+    Kafka --> KafkaConsumer["Kafka consumer"]
+    KafkaConsumer --> ReindexHandler["RebuildUserSearchIndexHandler"]
+```
 
 Run it with:
 
@@ -261,7 +282,26 @@ Run it with:
 ./gradlew :spring-messenger-example:bootRun
 ```
 
-The runnable app uses an in-memory H2 database in PostgreSQL compatibility mode so it starts without external services. The integration test `SpringMessengerExamplePostgresContainerTest` runs the same flow against PostgreSQL with Testcontainers.
+The runnable app uses an in-memory H2 database in PostgreSQL compatibility mode for application data and the JDBC outbox. RabbitMQ and Kafka/Redpanda are enabled in the same `application.yml`, so there is one global example to read and run.
+
+The example expects brokers on the usual local endpoints by default:
+
+| Broker | Default endpoint | Main properties |
+| --- | --- | --- |
+| RabbitMQ | `localhost:5672` | `RABBITMQ_HOST`, `RABBITMQ_PORT`, `RABBITMQ_USERNAME`, `RABBITMQ_PASSWORD` |
+| Kafka/Redpanda | `localhost:9092` | `KAFKA_BOOTSTRAP_SERVERS` |
+
+Broker examples are also covered by Testcontainers integration tests, so users can study the full setup without manually starting infrastructure.
+
+The most useful files to read are:
+
+| Scenario | File |
+| --- | --- |
+| Sync command/query + H2 outbox | `SpringMessengerExampleApplicationTest` |
+| PostgreSQL-backed outbox | `SpringMessengerExamplePostgresContainerTest` |
+| Kafka-compatible async command with Redpanda | `SpringMessengerExampleKafkaRedpandaContainerTest` |
+| RabbitMQ async command | `SpringMessengerExampleRabbitMqContainerTest` |
+| RabbitMQ and Kafka together | `SpringMessengerExampleBrokersContainerTest` |
 
 The example is intentionally split by responsibility:
 
@@ -269,12 +309,16 @@ The example is intentionally split by responsibility:
 spring-messenger-example/src/main/java/io/github/corentinguerrero/messenger/example
 |-- application
 |   |-- command
-|   |   `-- RegisterUser.java
+|   |   |-- RegisterUser.java
+|   |   |-- RebuildUserSearchIndex.java
+|   |   `-- SendWelcomeEmail.java
 |   |-- query
 |   |   `-- GetUser.java
 |   `-- handler
 |       |-- RegisterUserHandler.java
 |       |-- GetUserHandler.java
+|       |-- RebuildUserSearchIndexHandler.java
+|       |-- SendWelcomeEmailCommandHandler.java
 |       `-- SendWelcomeEmailHandler.java
 |-- domain
 |   |-- event
@@ -284,6 +328,8 @@ spring-messenger-example/src/main/java/io/github/corentinguerrero/messenger/exam
 |       |-- UserId.java
 |       `-- UserView.java
 |-- infrastructure
+|   |-- messaging
+|   |   `-- MessagingInfrastructureConfiguration.java
 |   `-- persistence
 |       `-- UserRepository.java
 |-- ExampleRunner.java
@@ -295,7 +341,17 @@ Database and integration test files:
 ```text
 spring-messenger-example/src/main/resources/application.yml
 spring-messenger-example/src/main/resources/schema.sql
+spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleApplicationTest.java
 spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExamplePostgresContainerTest.java
+spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleKafkaRedpandaContainerTest.java
+spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleRabbitMqContainerTest.java
+spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleBrokersContainerTest.java
+```
+
+Run only the example integration tests:
+
+```bash
+./gradlew :spring-messenger-example:test --tests '*ContainerTest'
 ```
 
 ## Core Concepts

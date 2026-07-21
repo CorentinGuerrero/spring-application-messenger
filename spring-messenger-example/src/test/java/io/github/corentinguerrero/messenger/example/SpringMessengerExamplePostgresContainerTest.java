@@ -21,8 +21,12 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Testcontainers
-@SpringBootTest(properties = "example.run-demo=false")
+@Testcontainers(disabledWithoutDocker = true)
+@SpringBootTest(properties = {
+    "example.run-demo=false",
+    "messenger.transports.rabbitmq.consumer.enabled=false",
+    "messenger.transports.kafka.consumer.enabled=false"
+})
 class SpringMessengerExamplePostgresContainerTest {
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");

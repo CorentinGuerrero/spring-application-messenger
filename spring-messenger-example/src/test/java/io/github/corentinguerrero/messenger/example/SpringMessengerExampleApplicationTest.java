@@ -19,7 +19,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest(properties = "example.run-demo=false")
+@SpringBootTest(properties = {
+    "example.run-demo=false",
+    "messenger.transports.rabbitmq.consumer.enabled=false",
+    "messenger.transports.kafka.consumer.enabled=false"
+})
 class SpringMessengerExampleApplicationTest {
     @Autowired
     private CommandBus commandBus;
