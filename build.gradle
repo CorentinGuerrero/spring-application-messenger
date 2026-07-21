@@ -5,7 +5,7 @@ plugins {
 }
 
 allprojects {
-    group = 'io.github.corentinguerrero'
+    group = 'io.github.applicationmessenger'
     version = '0.1.0-SNAPSHOT'
 }
 

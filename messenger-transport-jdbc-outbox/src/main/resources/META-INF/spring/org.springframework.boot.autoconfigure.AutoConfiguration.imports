@@ -1,2 +1,2 @@
-io.github.corentinguerrero.messenger.transport.jdbcoutbox.JdbcOutboxTransportAutoConfiguration
-io.github.corentinguerrero.messenger.transport.jdbcoutbox.JdbcOutboxPublisherAutoConfiguration
+io.github.applicationmessenger.messenger.transport.jdbcoutbox.JdbcOutboxTransportAutoConfiguration
+io.github.applicationmessenger.messenger.transport.jdbcoutbox.JdbcOutboxPublisherAutoConfiguration

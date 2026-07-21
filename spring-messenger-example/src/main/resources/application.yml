@@ -60,4 +60,4 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "*"
-        spring.json.value.default.type: io.github.corentinguerrero.messenger.transport.TransportMessage
+        spring.json.value.default.type: io.github.applicationmessenger.messenger.transport.TransportMessage

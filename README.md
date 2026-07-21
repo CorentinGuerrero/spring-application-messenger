@@ -104,37 +104,37 @@ The library now separates three surfaces:
 Stable application API:
 
 ```text
-io.github.corentinguerrero.messenger.Command<R>
-io.github.corentinguerrero.messenger.Query<R>
-io.github.corentinguerrero.messenger.Event
-io.github.corentinguerrero.messenger.CommandBus
-io.github.corentinguerrero.messenger.QueryBus
-io.github.corentinguerrero.messenger.EventBus
-io.github.corentinguerrero.messenger.envelope.MessageEnvelope
-io.github.corentinguerrero.messenger.envelope.MessageMetadata
-io.github.corentinguerrero.messenger.middleware.MessageMiddleware
-io.github.corentinguerrero.messenger.dispatch.EventErrorStrategy
-io.github.corentinguerrero.messenger.transport.TransportNames
+io.github.applicationmessenger.messenger.Command<R>
+io.github.applicationmessenger.messenger.Query<R>
+io.github.applicationmessenger.messenger.Event
+io.github.applicationmessenger.messenger.CommandBus
+io.github.applicationmessenger.messenger.QueryBus
+io.github.applicationmessenger.messenger.EventBus
+io.github.applicationmessenger.messenger.envelope.MessageEnvelope
+io.github.applicationmessenger.messenger.envelope.MessageMetadata
+io.github.applicationmessenger.messenger.middleware.MessageMiddleware
+io.github.applicationmessenger.messenger.dispatch.EventErrorStrategy
+io.github.applicationmessenger.messenger.transport.TransportNames
 ```
 
 Stable Spring API:
 
 ```text
-io.github.corentinguerrero.messenger.spring.CommandHandler
-io.github.corentinguerrero.messenger.spring.QueryHandler
-io.github.corentinguerrero.messenger.spring.EventHandler
-io.github.corentinguerrero.messenger.spring.TransactionalCommandHandler
+io.github.applicationmessenger.messenger.spring.CommandHandler
+io.github.applicationmessenger.messenger.spring.QueryHandler
+io.github.applicationmessenger.messenger.spring.EventHandler
+io.github.applicationmessenger.messenger.spring.TransactionalCommandHandler
 ```
 
 Stable SPI:
 
 ```text
-io.github.corentinguerrero.messenger.handler.HandlerRegistry
-io.github.corentinguerrero.messenger.handler.MessageHandler
-io.github.corentinguerrero.messenger.routing.MessageRouter
-io.github.corentinguerrero.messenger.routing.MessageRoute
-io.github.corentinguerrero.messenger.transport.MessageTransport
-io.github.corentinguerrero.messenger.transport.TransportMessage
+io.github.applicationmessenger.messenger.handler.HandlerRegistry
+io.github.applicationmessenger.messenger.handler.MessageHandler
+io.github.applicationmessenger.messenger.routing.MessageRouter
+io.github.applicationmessenger.messenger.routing.MessageRoute
+io.github.applicationmessenger.messenger.transport.MessageTransport
+io.github.applicationmessenger.messenger.transport.TransportMessage
 ```
 
 Stable transport names are exposed through `TransportNames`:
@@ -172,7 +172,7 @@ For a future published release, a typical application would use:
 
 ```groovy
 dependencies {
-    implementation 'io.github.corentinguerrero:spring-application-messenger-starter:0.1.0'
+    implementation 'io.github.applicationmessenger:spring-application-messenger-starter:0.1.0'
 }
 ```
 
@@ -180,12 +180,12 @@ Add transport modules only when needed:
 
 ```groovy
 dependencies {
-    implementation 'io.github.corentinguerrero:spring-application-messenger-starter:0.1.0'
-    implementation 'io.github.corentinguerrero:messenger-transport-rabbitmq:0.1.0'
-    implementation 'io.github.corentinguerrero:messenger-transport-kafka:0.1.0'
-    implementation 'io.github.corentinguerrero:messenger-transport-redis:0.1.0'
-    implementation 'io.github.corentinguerrero:messenger-transport-jdbc-outbox:0.1.0'
-    testImplementation 'io.github.corentinguerrero:messenger-test:0.1.0'
+    implementation 'io.github.applicationmessenger:spring-application-messenger-starter:0.1.0'
+    implementation 'io.github.applicationmessenger:messenger-transport-rabbitmq:0.1.0'
+    implementation 'io.github.applicationmessenger:messenger-transport-kafka:0.1.0'
+    implementation 'io.github.applicationmessenger:messenger-transport-redis:0.1.0'
+    implementation 'io.github.applicationmessenger:messenger-transport-jdbc-outbox:0.1.0'
+    testImplementation 'io.github.applicationmessenger:messenger-test:0.1.0'
 }
 ```
 
@@ -197,16 +197,16 @@ Gradle:
 
 ```groovy
 dependencies {
-    testImplementation 'io.github.corentinguerrero:messenger-test:0.1.0'
+    testImplementation 'io.github.applicationmessenger:messenger-test:0.1.0'
 }
 ```
 
 Record events published by a handler:
 
 ```java
-import io.github.corentinguerrero.messenger.test.RecordingEventBus;
+import io.github.applicationmessenger.messenger.test.RecordingEventBus;
 
-import static io.github.corentinguerrero.messenger.test.MessengerAssertions.assertThat;
+import static io.github.applicationmessenger.messenger.test.MessengerAssertions.assertThat;
 
 RecordingEventBus eventBus = new RecordingEventBus();
 RegisterUserHandler handler = new RegisterUserHandler(repository, eventBus);
@@ -306,7 +306,7 @@ The most useful files to read are:
 The example is intentionally split by responsibility:
 
 ```text
-spring-messenger-example/src/main/java/io/github/corentinguerrero/messenger/example
+spring-messenger-example/src/main/java/io/github/applicationmessenger/messenger/example
 |-- application
 |   |-- command
 |   |   |-- RegisterUser.java
@@ -341,11 +341,11 @@ Database and integration test files:
 ```text
 spring-messenger-example/src/main/resources/application.yml
 spring-messenger-example/src/main/resources/schema.sql
-spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleApplicationTest.java
-spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExamplePostgresContainerTest.java
-spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleKafkaRedpandaContainerTest.java
-spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleRabbitMqContainerTest.java
-spring-messenger-example/src/test/java/io/github/corentinguerrero/messenger/example/SpringMessengerExampleBrokersContainerTest.java
+spring-messenger-example/src/test/java/io/github/applicationmessenger/messenger/example/SpringMessengerExampleApplicationTest.java
+spring-messenger-example/src/test/java/io/github/applicationmessenger/messenger/example/SpringMessengerExamplePostgresContainerTest.java
+spring-messenger-example/src/test/java/io/github/applicationmessenger/messenger/example/SpringMessengerExampleKafkaRedpandaContainerTest.java
+spring-messenger-example/src/test/java/io/github/applicationmessenger/messenger/example/SpringMessengerExampleRabbitMqContainerTest.java
+spring-messenger-example/src/test/java/io/github/applicationmessenger/messenger/example/SpringMessengerExampleBrokersContainerTest.java
 ```
 
 Run only the example integration tests:
