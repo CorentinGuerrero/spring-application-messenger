@@ -1,4 +1,16 @@
+<div align="center">
+
 # Spring Application Messenger
+
+**Spring-native application messaging for commands, queries, events, middleware, transports, and testing.**
+
+[![version](https://img.shields.io/badge/version-0.1.0--SNAPSHOT-orange)](#status)
+[![java](https://img.shields.io/badge/java-21+-blue)](#requirements)
+[![spring boot](https://img.shields.io/badge/spring%20boot-3.5.x-6db33f)](#requirements)
+[![license](https://img.shields.io/badge/license-TBD-lightgrey)](#status)
+[![docs](https://img.shields.io/badge/docs-github.io-0f766e)](https://corentinguerrero.github.io/spring-application-messenger/)
+
+</div>
 
 Spring Application Messenger is a lightweight Spring Boot library for dispatching application commands, queries, and domain events through a unified API.
 
