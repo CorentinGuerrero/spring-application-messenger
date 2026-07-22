@@ -93,6 +93,20 @@ gradle test
 
 The test suite includes Testcontainers integration tests for RabbitMQ, Kafka, Redis, and PostgreSQL. They run automatically when Docker is available and are skipped when Docker is not available.
 
+## GitHub Pages Documentation
+
+The static documentation site lives in `docs/` and can be hosted directly with GitHub Pages.
+
+To publish it:
+
+1. Open the repository settings on GitHub.
+2. Go to `Pages`.
+3. Set `Source` to `Deploy from a branch`.
+4. Select the main branch.
+5. Select the `/docs` folder.
+
+The site is static: no build step is required.
+
 ## API Stability
 
 The library now separates three surfaces:
