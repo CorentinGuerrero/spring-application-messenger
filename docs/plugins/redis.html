@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Redis Streams Connector - Spring Application Messenger</title>
+    <meta name="description" content="Redis Streams connector documentation for Spring Application Messenger.">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">M</span><span>Spring Application Messenger</span></a>
+        <div class="nav-links">
+          <a href="../index.html#install">Install</a>
+          <a href="../index.html#transports">Transports</a>
+          <a href="rabbitmq.html">RabbitMQ</a>
+          <a href="kafka.html">Kafka</a>
+          <a href="jdbc-outbox.html">Outbox</a>
+          <a href="https://github.com/CorentinGuerrero/spring-application-messenger">GitHub</a>
+        </div>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <aside class="sidebar">
+        <strong>Redis Streams</strong>
+        <a class="current" href="#overview">Overview</a>
+        <a href="#install">Install</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#options">Options</a>
+        <a href="#usage">Usage Example</a>
+        <a href="#listener">Managed Listener</a>
+        <a href="#limitations">Known Limitations</a>
+      </aside>
+      <article class="doc-content">
+        <section class="doc-section" id="overview">
+          <p class="eyebrow">Connector</p>
+          <h1>Redis Streams</h1>
+          <p class="lead">The Redis connector routes commands or events to Redis Streams and can run a managed consumer-group listener that ACKs messages after local handler dispatch.</p>
+        </section>
+        <section class="doc-section" id="install">
+          <h2>Install</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>dependencies {
+    implementation "io.github.applicationmessenger:messenger-transport-redis:0.1.0"
+}</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="configuration">
+          <h2>Configuration</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>spring:
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+messenger:
+  routing:
+    commands:
+      RebuildSearchIndex: redis
+  transports:
+    redis:
+      enabled: true
+      stream-prefix: messenger
+      streams:
+        RebuildSearchIndex: messenger.search.commands
+      consumer:
+        enabled: true
+        streams:
+          - messenger.search.commands
+        group: messenger
+        consumer-name: worker-1
+        poll-timeout: 1s</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="options">
+          <h2>Connector Options</h2>
+          <div class="option-list">
+            <div class="option"><code>enabled</code><span>Enables the Redis transport. Defaults to <code>true</code> when the module and RedisTemplate are present.</span></div>
+            <div class="option"><code>stream-prefix</code><span>Prefix for generated streams when no explicit stream is configured. Default: <code>messenger</code>.</span></div>
+            <div class="option"><code>streams</code><span>Map of message simple name or fully qualified name to Redis stream.</span></div>
+            <div class="option"><code>consumer.enabled</code><span>Starts the managed Redis Streams listener.</span></div>
+            <div class="option"><code>consumer.streams</code><span>Streams consumed by the listener.</span></div>
+            <div class="option"><code>consumer.group</code><span>Redis consumer group. Default: <code>messenger</code>.</span></div>
+            <div class="option"><code>consumer.consumer-name</code><span>Consumer name used in the group. Default: <code>messenger-worker</code>.</span></div>
+            <div class="option"><code>consumer.poll-timeout</code><span>Blocking poll timeout. Default: <code>1s</code>.</span></div>
+          </div>
+        </section>
+        <section class="doc-section" id="usage">
+          <h2>Usage Example</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>public record RebuildSearchIndex(String indexName)
+    implements Command&lt;Void&gt; {
+}
+
+@CommandHandler
+public class RebuildSearchIndexHandler {
+    public Void handle(RebuildSearchIndex command) {
+        // rebuild index
+        return null;
+    }
+}</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="listener">
+          <h2>Managed Listener</h2>
+          <p>The managed listener creates or uses a Redis consumer group, reads configured streams, converts <code>TransportMessage</code> payloads back to Java messages, dispatches handlers, and ACKs successfully processed entries.</p>
+        </section>
+        <section class="doc-section" id="limitations">
+          <h2>Known Limitations</h2>
+          <ul class="check-list">
+            <li>No pending-entry recovery policy yet.</li>
+            <li>No DLQ abstraction yet.</li>
+            <li>Serialization is currently Jackson-based.</li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

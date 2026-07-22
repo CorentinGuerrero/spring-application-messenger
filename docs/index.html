@@ -281,6 +281,28 @@ public class SendWelcomeEmailHandler {
         <p class="section-intro">
           Transport modules are optional. Add only the adapters your application needs.
         </p>
+        <div class="cards four">
+          <article class="card">
+            <span class="tag">Connector</span>
+            <h3><a href="plugins/rabbitmq.html">RabbitMQ</a></h3>
+            <p>Queue-backed async commands and events using Spring AMQP.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Connector</span>
+            <h3><a href="plugins/kafka.html">Kafka / Redpanda</a></h3>
+            <p>Topic-backed messaging using Spring Kafka configuration.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Connector</span>
+            <h3><a href="plugins/redis.html">Redis Streams</a></h3>
+            <p>Stream-backed dispatch with managed consumer group listener.</p>
+          </article>
+          <article class="card">
+            <span class="tag">Connector</span>
+            <h3><a href="plugins/jdbc-outbox.html">JDBC Outbox</a></h3>
+            <p>Transactional message persistence before broker publishing.</p>
+          </article>
+        </div>
         <div class="table-wrap">
           <table>
             <thead>

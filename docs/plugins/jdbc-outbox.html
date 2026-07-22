@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>JDBC Outbox Connector - Spring Application Messenger</title>
+    <meta name="description" content="JDBC outbox connector documentation for Spring Application Messenger.">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">M</span><span>Spring Application Messenger</span></a>
+        <div class="nav-links">
+          <a href="../index.html#install">Install</a>
+          <a href="../index.html#transports">Transports</a>
+          <a href="rabbitmq.html">RabbitMQ</a>
+          <a href="kafka.html">Kafka</a>
+          <a href="redis.html">Redis</a>
+          <a href="https://github.com/CorentinGuerrero/spring-application-messenger">GitHub</a>
+        </div>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <aside class="sidebar">
+        <strong>JDBC Outbox</strong>
+        <a class="current" href="#overview">Overview</a>
+        <a href="#install">Install</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#options">Options</a>
+        <a href="#flow">Flow</a>
+        <a href="#schema">Schema</a>
+        <a href="#limitations">Known Limitations</a>
+      </aside>
+      <article class="doc-content">
+        <section class="doc-section" id="overview">
+          <p class="eyebrow">Connector</p>
+          <h1>JDBC Outbox</h1>
+          <p class="lead">The JDBC outbox stores messages in the same database transaction as business changes. A publisher later forwards pending rows to a target transport such as sync, RabbitMQ, Kafka, or Redis.</p>
+        </section>
+        <section class="doc-section" id="install">
+          <h2>Install</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>dependencies {
+    implementation "io.github.applicationmessenger:messenger-transport-jdbc-outbox:0.1.0"
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
+}</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="configuration">
+          <h2>Configuration</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>messenger:
+  routing:
+    events:
+      UserRegistered: pg-outbox
+  transports:
+    jdbc-outbox:
+      enabled: true
+      initialize-schema: true
+      table-name: messenger_outbox
+      initial-status: PENDING
+      publisher:
+        enabled: true
+        batch-size: 50
+        max-attempts: 3
+        poll-interval: 5s
+        retry-delay: 30s
+        target-transport: kafka
+        routes:
+          UserRegistered: kafka</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="options">
+          <h2>Connector Options</h2>
+          <div class="option-list">
+            <div class="option"><code>enabled</code><span>Enables the outbox transport. Defaults to <code>true</code> when JdbcTemplate is present.</span></div>
+            <div class="option"><code>initialize-schema</code><span>Creates the outbox table automatically. Default: <code>true</code>.</span></div>
+            <div class="option"><code>table-name</code><span>Outbox table name. Default: <code>messenger_outbox</code>.</span></div>
+            <div class="option"><code>initial-status</code><span>Status assigned to newly stored rows. Default: <code>PENDING</code>.</span></div>
+            <div class="option"><code>publisher.enabled</code><span>Starts the scheduled publisher.</span></div>
+            <div class="option"><code>publisher.batch-size</code><span>Maximum pending messages processed per poll. Default: <code>50</code>.</span></div>
+            <div class="option"><code>publisher.max-attempts</code><span>Attempts before final failure. Default: <code>3</code>.</span></div>
+            <div class="option"><code>publisher.target-transport</code><span>Default transport used by the publisher.</span></div>
+            <div class="option"><code>publisher.routes</code><span>Per-message override from message type to target transport.</span></div>
+          </div>
+        </section>
+        <section class="doc-section" id="flow">
+          <h2>Flow</h2>
+          <div class="flow">
+            <div class="flow-step"><strong>1. Handler</strong><span>Saves business state and publishes an event.</span></div>
+            <div class="flow-step"><strong>2. Outbox</strong><span>Stores the event as a row in the same transaction.</span></div>
+            <div class="flow-step"><strong>3. Commit</strong><span>Business data and message become durable together.</span></div>
+            <div class="flow-step"><strong>4. Publisher</strong><span>Forwards pending rows and marks them published or failed.</span></div>
+          </div>
+        </section>
+        <section class="doc-section" id="schema">
+          <h2>Schema</h2>
+          <p>The connector owns a stable outbox table and can initialize it automatically. Applications should not need to hand-write the table in normal usage.</p>
+        </section>
+        <section class="doc-section" id="limitations">
+          <h2>Known Limitations</h2>
+          <ul class="check-list">
+            <li>No broker-level delivery guarantee beyond the selected target transport.</li>
+            <li>No admin UI for failed messages yet.</li>
+            <li>Payload serialization is currently Jackson-based.</li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>RabbitMQ Connector - Spring Application Messenger</title>
+    <meta name="description" content="RabbitMQ connector documentation for Spring Application Messenger.">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">M</span><span>Spring Application Messenger</span></a>
+        <div class="nav-links">
+          <a href="../index.html#install">Install</a>
+          <a href="../index.html#transports">Transports</a>
+          <a href="kafka.html">Kafka</a>
+          <a href="redis.html">Redis</a>
+          <a href="jdbc-outbox.html">Outbox</a>
+          <a href="https://github.com/CorentinGuerrero/spring-application-messenger">GitHub</a>
+        </div>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <aside class="sidebar">
+        <strong>RabbitMQ</strong>
+        <a class="current" href="#overview">Overview</a>
+        <a href="#install">Install</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#options">Options</a>
+        <a href="#usage">Usage Example</a>
+        <a href="#consumer">Consumer</a>
+        <a href="#limitations">Known Limitations</a>
+      </aside>
+      <article class="doc-content">
+        <section class="doc-section" id="overview">
+          <p class="eyebrow">Connector</p>
+          <h1>RabbitMQ</h1>
+          <p class="lead">
+            The RabbitMQ connector routes commands or events to an AMQP exchange using Spring AMQP.
+            When the consumer is enabled, incoming <code>TransportMessage</code> payloads are converted back
+            to Java messages and dispatched to local Messenger handlers.
+          </p>
+        </section>
+        <section class="doc-section" id="install">
+          <h2>Install</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>dependencies {
+    implementation "io.github.applicationmessenger:messenger-transport-rabbitmq:0.1.0"
+}</code></pre>
+          </div>
+          <p>The connector uses Spring Boot RabbitMQ configuration, so SSL, credentials, host, port, virtual host, and connection options come from <code>spring.rabbitmq.*</code>.</p>
+        </section>
+        <section class="doc-section" id="configuration">
+          <h2>Configuration</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>spring:
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+messenger:
+  routing:
+    commands:
+      SendWelcomeEmail: rabbitmq
+  transports:
+    rabbitmq:
+      enabled: true
+      exchange: messenger.example
+      routing-keys:
+        SendWelcomeEmail: mail.welcome
+      consumer:
+        enabled: true
+        queues: messenger.example.mail</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="options">
+          <h2>Connector Options</h2>
+          <div class="option-list">
+            <div class="option"><code>enabled</code><span>Enables the RabbitMQ transport. Defaults to <code>true</code> when the module and RabbitTemplate are present.</span></div>
+            <div class="option"><code>exchange</code><span>AMQP exchange used for outbound messages. Default: <code>messenger</code>.</span></div>
+            <div class="option"><code>routing-key-prefix</code><span>Prefix for generated routing keys when no explicit key is configured. Default: <code>messenger.</code>.</span></div>
+            <div class="option"><code>routing-keys</code><span>Map of message simple name or fully qualified name to routing key.</span></div>
+            <div class="option"><code>consumer.enabled</code><span>Starts the Rabbit listener for inbound messages.</span></div>
+            <div class="option"><code>consumer.queues</code><span>Comma-separated queue list consumed by the Messenger listener.</span></div>
+          </div>
+        </section>
+        <section class="doc-section" id="usage">
+          <h2>Usage Example</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>public record SendWelcomeEmail(UserId userId, String email)
+    implements Command&lt;Void&gt; {
+}
+
+@CommandHandler
+public class SendWelcomeEmailCommandHandler {
+    public Void handle(SendWelcomeEmail command) {
+        // send email
+        return null;
+    }
+}
+
+commandBus.dispatch(new SendWelcomeEmail(userId, "john@example.com"));</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="consumer">
+          <h2>Consumer Behavior</h2>
+          <p>The Rabbit listener receives a <code>TransportMessage</code>, resolves <code>messageType</code>, converts the payload with Jackson, then calls <code>IncomingMessageDispatcher</code>. The dispatched message reaches the same handler method as a local dispatch.</p>
+        </section>
+        <section class="doc-section" id="limitations">
+          <h2>Known Limitations</h2>
+          <ul class="check-list">
+            <li>No built-in DLQ policy yet. Configure DLQ behavior through Spring AMQP/RabbitMQ infrastructure.</li>
+            <li>No framework-level retry strategy yet for failed inbound messages.</li>
+            <li>Serialization is currently Jackson-based.</li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

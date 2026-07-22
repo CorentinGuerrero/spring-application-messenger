@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kafka Connector - Spring Application Messenger</title>
+    <meta name="description" content="Kafka and Redpanda connector documentation for Spring Application Messenger.">
+    <link rel="stylesheet" href="../styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="../index.html"><span class="brand-mark">M</span><span>Spring Application Messenger</span></a>
+        <div class="nav-links">
+          <a href="../index.html#install">Install</a>
+          <a href="../index.html#transports">Transports</a>
+          <a href="rabbitmq.html">RabbitMQ</a>
+          <a href="redis.html">Redis</a>
+          <a href="jdbc-outbox.html">Outbox</a>
+          <a href="https://github.com/CorentinGuerrero/spring-application-messenger">GitHub</a>
+        </div>
+      </nav>
+    </header>
+    <main class="doc-page">
+      <aside class="sidebar">
+        <strong>Kafka / Redpanda</strong>
+        <a class="current" href="#overview">Overview</a>
+        <a href="#install">Install</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#options">Options</a>
+        <a href="#usage">Usage Example</a>
+        <a href="#security">Security</a>
+        <a href="#limitations">Known Limitations</a>
+      </aside>
+      <article class="doc-content">
+        <section class="doc-section" id="overview">
+          <p class="eyebrow">Connector</p>
+          <h1>Kafka / Redpanda</h1>
+          <p class="lead">The Kafka connector routes commands or events to Kafka-compatible topics. It is built on Spring Kafka, so broker connection, SSL, SASL, producer, and consumer settings come from normal <code>spring.kafka.*</code> configuration.</p>
+        </section>
+        <section class="doc-section" id="install">
+          <h2>Install</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>dependencies {
+    implementation "io.github.applicationmessenger:messenger-transport-kafka:0.1.0"
+}</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="configuration">
+          <h2>Configuration</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      auto-offset-reset: earliest
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.value.default.type: io.github.applicationmessenger.messenger.transport.TransportMessage
+
+messenger:
+  routing:
+    commands:
+      RebuildUserSearchIndex: kafka
+  transports:
+    kafka:
+      enabled: true
+      topics:
+        RebuildUserSearchIndex: messenger.example.user-index
+      consumer:
+        enabled: true
+        topics: messenger.example.user-index
+        group-id: messenger-example</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="options">
+          <h2>Connector Options</h2>
+          <div class="option-list">
+            <div class="option"><code>enabled</code><span>Enables the Kafka transport. Defaults to <code>true</code> when the module and KafkaTemplate are present.</span></div>
+            <div class="option"><code>topic-prefix</code><span>Prefix for generated topics when no explicit topic is configured. Default: <code>messenger</code>.</span></div>
+            <div class="option"><code>topics</code><span>Map of message simple name or fully qualified name to topic.</span></div>
+            <div class="option"><code>consumer.enabled</code><span>Starts the Kafka listener for inbound messages.</span></div>
+            <div class="option"><code>consumer.topics</code><span>Comma-separated topic list consumed by the Messenger listener.</span></div>
+            <div class="option"><code>consumer.group-id</code><span>Kafka consumer group used by the Messenger listener. Default: <code>messenger</code>.</span></div>
+          </div>
+        </section>
+        <section class="doc-section" id="usage">
+          <h2>Usage Example</h2>
+          <div class="terminal"><div class="terminal-bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>public record RebuildUserSearchIndex(UserId userId)
+    implements Command&lt;Void&gt; {
+}
+
+@CommandHandler
+public class RebuildUserSearchIndexHandler {
+    public Void handle(RebuildUserSearchIndex command) {
+        // rebuild index
+        return null;
+    }
+}
+
+commandBus.dispatch(new RebuildUserSearchIndex(userId));</code></pre>
+          </div>
+        </section>
+        <section class="doc-section" id="security">
+          <h2>SSL / SASL</h2>
+          <p>The connector does not invent a separate security model. Use Spring Kafka properties such as <code>spring.kafka.properties.security.protocol</code>, <code>sasl.mechanism</code>, <code>sasl.jaas.config</code>, and SSL truststore/keystore settings.</p>
+        </section>
+        <section class="doc-section" id="limitations">
+          <h2>Known Limitations</h2>
+          <ul class="check-list">
+            <li>No DLQ abstraction yet. Use Spring Kafka error handlers and broker policies.</li>
+            <li>Transport message schema is currently Java/Jackson oriented.</li>
+            <li>No schema registry integration yet.</li>
+          </ul>
+        </section>
+      </article>
+    </main>
+  </body>
+</html>

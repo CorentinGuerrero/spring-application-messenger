@@ -109,6 +109,13 @@ The test suite includes Testcontainers integration tests for RabbitMQ, Kafka, Re
 
 The static documentation site lives in `docs/` and can be hosted directly with GitHub Pages.
 
+It includes connector reference pages for:
+
+- RabbitMQ: `docs/plugins/rabbitmq.html`
+- Kafka / Redpanda: `docs/plugins/kafka.html`
+- Redis Streams: `docs/plugins/redis.html`
+- JDBC outbox: `docs/plugins/jdbc-outbox.html`
+
 To publish it:
 
 1. Open the repository settings on GitHub.

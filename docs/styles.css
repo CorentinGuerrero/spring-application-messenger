@@ -260,6 +260,56 @@ code {
   border-top: 1px solid var(--line);
 }
 
+.doc-page {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: 32px;
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 42px 0 70px;
+}
+
+.sidebar {
+  position: sticky;
+  top: 88px;
+  align-self: start;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--surface);
+}
+
+.sidebar strong {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.sidebar a {
+  display: block;
+  padding: 7px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.sidebar a.current {
+  color: var(--primary-strong);
+  font-weight: 800;
+}
+
+.doc-content {
+  min-width: 0;
+}
+
+.doc-section {
+  padding: 34px 0;
+  border-top: 1px solid var(--line);
+}
+
+.doc-section:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
 .section-intro {
   max-width: 760px;
   margin: 0 0 24px;
@@ -275,6 +325,10 @@ code {
 
 .cards.two {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cards.four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .card {
@@ -397,6 +451,31 @@ tr:last-child td {
   color: #5f3b0b;
 }
 
+.option-list {
+  display: grid;
+  gap: 12px;
+}
+
+.option {
+  display: grid;
+  grid-template-columns: minmax(160px, 0.45fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.option:last-child {
+  border-bottom: 0;
+}
+
+.option code {
+  font-weight: 800;
+}
+
+.option span {
+  color: var(--muted);
+}
+
 .footer {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
@@ -420,9 +499,16 @@ tr:last-child td {
   .split,
   .cards,
   .cards.two,
+  .cards.four,
   .flow,
-  .flow.wide {
+  .flow.wide,
+  .doc-page,
+  .option {
     grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
   }
 
   .hero {
