@@ -10,82 +10,89 @@
   <body>
     <header class="site-header">
       <nav class="nav" aria-label="Primary navigation">
-        <a class="brand" href="#top" aria-label="Spring Application Messenger home">
+        <a class="brand" href="index.html" aria-label="Spring Application Messenger documentation">
           <span class="brand-mark">M</span>
           <span>Spring Application Messenger</span>
         </a>
         <div class="nav-links">
-          <a href="#install">Install</a>
-          <a href="#messages">Messages</a>
-          <a href="#routing">Routing</a>
-          <a href="#transports">Transports</a>
-          <a href="#outbox">Outbox</a>
-          <a href="#testing">Testing</a>
+          <a href="index.html">Docs</a>
+          <a href="plugins/rabbitmq.html">RabbitMQ</a>
+          <a href="plugins/kafka.html">Kafka</a>
+          <a href="plugins/redis.html">Redis</a>
+          <a href="plugins/jdbc-outbox.html">Outbox</a>
           <a href="https://github.com/CorentinGuerrero/spring-application-messenger">GitHub</a>
+          <span class="search-box">Search</span>
         </div>
       </nav>
     </header>
 
-    <main id="top">
-      <section class="hero">
-        <div class="hero-grid">
-          <div>
-            <p class="eyebrow">Spring-native application messaging</p>
-            <h1>One API for commands, queries, events, and progressive async routing.</h1>
-            <p class="lead">
-              A lightweight Spring Boot library inspired by Symfony Messenger: start in-process,
-              add middleware, route selected messages to RabbitMQ, Kafka, Redis Streams, or a JDBC outbox,
-              and keep application handlers readable.
-            </p>
-            <div class="badge-row" aria-label="Project badges">
-              <span class="badge"><strong>version</strong> 0.1.0-SNAPSHOT</span>
-              <span class="badge"><strong>java</strong> 21+</span>
-              <span class="badge"><strong>spring boot</strong> 3.5.x</span>
-              <span class="badge"><strong>namespace</strong> io.github.applicationmessenger</span>
-            </div>
-            <div class="actions">
-              <a class="button primary" href="#install">Start reading</a>
-              <a class="button" href="#example">See complete example</a>
-              <a class="button" href="https://github.com/CorentinGuerrero/spring-application-messenger">Repository</a>
-            </div>
-          </div>
-          <div class="terminal" aria-label="Minimal API example">
-            <div class="terminal-bar" aria-hidden="true">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
-            <pre><code>public record RegisterUser(String email)
-    implements Command&lt;UserId&gt; {
-}
-
-@CommandHandler
-public class RegisterUserHandler {
-    public UserId handle(RegisterUser command) {
-        // persist aggregate, publish events
-    }
-}
-
-UserId id = commandBus.dispatch(
-    new RegisterUser("john@example.com")
-);</code></pre>
-          </div>
+    <main class="docs-shell">
+      <aside class="docs-sidebar" aria-label="Documentation navigation">
+        <a class="sidebar-title" href="index.html">Documentation</a>
+        <div class="sidebar-group">
+          <span>Getting Started</span>
+          <a class="current" href="#overview">Overview</a>
+          <a href="#installation">Installation</a>
+          <a href="#quickstart">Quickstart</a>
+          <a href="#configuration">Configuration</a>
         </div>
-      </section>
+        <div class="sidebar-group">
+          <span>Concepts</span>
+          <a href="#messages">Messages</a>
+          <a href="#handlers">Handlers</a>
+          <a href="#middleware">Middleware</a>
+          <a href="#routing">Routing</a>
+          <a href="#transport-message">TransportMessage</a>
+        </div>
+        <div class="sidebar-group">
+          <span>Connectors</span>
+          <a href="plugins/rabbitmq.html">RabbitMQ</a>
+          <a href="plugins/kafka.html">Kafka / Redpanda</a>
+          <a href="plugins/redis.html">Redis Streams</a>
+          <a href="plugins/jdbc-outbox.html">JDBC Outbox</a>
+        </div>
+        <div class="sidebar-group">
+          <span>Guides</span>
+          <a href="#example">Spring Boot Example</a>
+          <a href="#testing">Testing</a>
+          <a href="#status">Status & Scope</a>
+          <a href="#github-pages">GitHub Pages</a>
+        </div>
+      </aside>
 
-      <section class="section" id="install">
-        <h2>Installation</h2>
-        <p class="section-intro">
-          Artifacts are not published yet. The intended Maven coordinates already use the neutral
-          <code>io.github.applicationmessenger</code> namespace.
-        </p>
-        <div class="split">
+      <article class="docs-content">
+        <section class="doc-section first" id="overview">
+          <p class="eyebrow">Overview</p>
+          <h1>Spring Application Messenger</h1>
+          <p class="lead">
+            Spring-native application messaging for commands, queries, events, middleware, transports,
+            outbox publishing, and test-friendly handlers.
+          </p>
+          <div class="badge-row" aria-label="Project badges">
+            <span class="badge"><strong>version</strong> 0.1.0-SNAPSHOT</span>
+            <span class="badge"><strong>java</strong> 21+</span>
+            <span class="badge"><strong>spring boot</strong> 3.5.x</span>
+            <span class="badge"><strong>namespace</strong> io.github.applicationmessenger</span>
+          </div>
+          <p>
+            The library is inspired by Symfony Messenger, but stays deliberately smaller and Spring-native.
+            Application code talks to <code>CommandBus</code>, <code>QueryBus</code>, and <code>EventBus</code>.
+            Routing decides whether a command or event is handled locally, sent to a broker, or stored in
+            a JDBC outbox before being published.
+          </p>
+          <div class="notice">
+            Queries are synchronous and in-process by design. Broker routing applies to commands and events.
+          </div>
+        </section>
+
+        <section class="doc-section" id="installation">
+          <h2>Installation</h2>
+          <p>
+            Artifacts are not published yet. These are the intended coordinates for a future release.
+            In the repository today, modules are consumed as local Gradle projects.
+          </p>
           <div class="terminal">
-            <div class="terminal-bar" aria-hidden="true">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
             <pre><code>dependencies {
     implementation "io.github.applicationmessenger:spring-application-messenger-starter:0.1.0"
 
@@ -97,96 +104,20 @@ UserId id = commandBus.dispatch(
     testImplementation "io.github.applicationmessenger:messenger-test:0.1.0"
 }</code></pre>
           </div>
-          <div class="card">
-            <h3>Current baseline</h3>
-            <ul class="check-list">
-              <li>Java 21 minimum</li>
-              <li>Spring Boot 3.5.x dependency alignment</li>
-              <li>Gradle multi-module build</li>
-              <li>Testcontainers coverage for PostgreSQL, RabbitMQ, Kafka/Redpanda, and Redis</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section" id="architecture">
-        <h2>Architecture</h2>
-        <p class="section-intro">
-          Application code talks to buses. The library wraps messages in envelopes, applies middleware,
-          resolves routing, then invokes a local handler or hands the message to a transport.
-        </p>
-        <div class="flow wide" aria-label="Runtime dispatch flow">
-          <div class="flow-step">
-            <strong>Application</strong>
-            <span>Dispatches a command, asks a query, or publishes an event.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Envelope</strong>
-            <span>Adds metadata: message ID, correlation ID, causation ID, timestamp, headers.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Middleware</strong>
-            <span>Validation, transactions, logging, authorization, metrics, retries.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Router</strong>
-            <span>Chooses <code>sync</code>, RabbitMQ, Kafka, Redis, or JDBC outbox.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Handler</strong>
-            <span>Incoming messages are converted back and dispatched to application handlers.</span>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="messages">
-        <h2>Messages And Buses</h2>
-        <p class="section-intro">
-          The public API deliberately stays small. Commands modify state, queries read state,
-          and events describe facts that already happened.
-        </p>
-        <div class="cards">
-          <article class="card">
-            <span class="tag">CommandBus</span>
-            <h3>Commands</h3>
-            <p>One command has exactly one handler. It can return a result and failures are propagated to the caller.</p>
-            <pre><code>public record CreateOrder(...)
-    implements Command&lt;OrderId&gt; {
-}</code></pre>
-          </article>
-          <article class="card">
-            <span class="tag">QueryBus</span>
-            <h3>Queries</h3>
-            <p>One query has exactly one handler. It always returns a result and remains synchronous by design.</p>
-            <pre><code>public record GetOrder(...)
-    implements Query&lt;OrderView&gt; {
-}</code></pre>
-          </article>
-          <article class="card">
-            <span class="tag">EventBus</span>
-            <h3>Events</h3>
-            <p>An event may have zero, one, or many handlers. Handlers do not return values.</p>
-            <pre><code>public record OrderCreated(...)
-    implements Event {
-}</code></pre>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="handlers">
-        <h2>Handlers</h2>
-        <p class="section-intro">
-          Handlers are regular Spring beans. At startup, the scanner validates annotated beans,
-          finds <code>handle(...)</code> methods, infers message types, and fails fast on invalid configuration.
-        </p>
-        <div class="split">
+        <section class="doc-section" id="quickstart">
+          <h2>Quickstart</h2>
+          <p>
+            Define a message, add a handler, and dispatch through the matching bus.
+          </p>
           <div class="terminal">
-            <div class="terminal-bar" aria-hidden="true">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
-            <pre><code>@CommandHandler
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>public record RegisterUser(String email)
+    implements Command&lt;UserId&gt; {
+}
+
+@CommandHandler
 public class RegisterUserHandler {
     private final UserRepository repository;
     private final EventBus eventBus;
@@ -199,169 +130,156 @@ public class RegisterUserHandler {
     }
 }
 
-@EventHandler
-public class SendWelcomeEmailHandler {
-    public void handle(UserRegistered event) {
-        // send email
-    }
-}</code></pre>
+UserId userId = commandBus.dispatch(new RegisterUser("john@example.com"));</code></pre>
           </div>
-          <div class="card">
-            <h3>Validation rules</h3>
-            <ul class="check-list">
-              <li>Handlers expose one or more <code>handle(...)</code> methods.</li>
-              <li>Each handler method has exactly one message parameter.</li>
-              <li>Commands and queries have one handler.</li>
-              <li>Events can have many handlers.</li>
-              <li>Command/query return types must match the message contract.</li>
-              <li>Event handlers must return <code>void</code>.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section" id="middleware">
-        <h2>Middleware</h2>
-        <p class="section-intro">
-          Middleware runs around dispatch before the final local handler or selected transport.
-          It is the extension point for cross-cutting behavior.
-        </p>
-        <div class="cards two">
-          <article class="card">
-            <h3>Typical middleware</h3>
-            <ul class="check-list">
-              <li>Bean Validation</li>
-              <li>Transaction boundaries</li>
-              <li>Logging and correlation IDs</li>
-              <li>Authorization</li>
-              <li>Metrics and tracing</li>
-              <li>Local retry or error mapping</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>API</h3>
-            <pre><code>public interface MessageMiddleware {
-    Object invoke(
-        MessageEnvelope envelope,
-        MessageHandler next
-    );
-}</code></pre>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="routing">
-        <h2>Routing Configuration</h2>
-        <p class="section-intro">
-          Routing decides where a command or event goes. Queries are always synchronous and are not routed to brokers.
-        </p>
-        <div class="terminal">
-          <div class="terminal-bar" aria-hidden="true">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-          <pre><code>messenger:
+        <section class="doc-section" id="configuration">
+          <h2>Configuration</h2>
+          <p>
+            This is the shape of the complete example configuration: one sync command, one RabbitMQ command,
+            one Kafka command, and one event stored in the JDBC outbox.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>messenger:
+  validation:
+    enabled: true
+  events:
+    error-strategy: fail-fast
   routing:
     commands:
       RegisterUser: sync
       SendWelcomeEmail: rabbitmq
       RebuildUserSearchIndex: kafka
     events:
-      UserRegistered: pg-outbox</code></pre>
-        </div>
-        <div class="notice">
-          Routing supports simple class names such as <code>UserRegistered</code> and fully qualified class names.
-          Use fully qualified names when two messages share the same simple name.
-        </div>
-      </section>
+      UserRegistered: pg-outbox
+  transports:
+    rabbitmq:
+      exchange: messenger.example
+      routing-keys:
+        SendWelcomeEmail: mail.welcome
+      consumer:
+        enabled: true
+        queues: messenger.example.mail
+    kafka:
+      topics:
+        RebuildUserSearchIndex: messenger.example.user-index
+      consumer:
+        enabled: true
+        topics: messenger.example.user-index
+        group-id: messenger-example
+    jdbc-outbox:
+      initialize-schema: true
+      table-name: messenger_outbox
+      publisher:
+        enabled: false
+        target-transport: sync</code></pre>
+          </div>
+        </section>
 
-      <section class="section" id="transports">
-        <h2>Transports</h2>
-        <p class="section-intro">
-          Transport modules are optional. Add only the adapters your application needs.
-        </p>
-        <div class="cards four">
-          <article class="card">
-            <span class="tag">Connector</span>
-            <h3><a href="plugins/rabbitmq.html">RabbitMQ</a></h3>
-            <p>Queue-backed async commands and events using Spring AMQP.</p>
-          </article>
-          <article class="card">
-            <span class="tag">Connector</span>
-            <h3><a href="plugins/kafka.html">Kafka / Redpanda</a></h3>
-            <p>Topic-backed messaging using Spring Kafka configuration.</p>
-          </article>
-          <article class="card">
-            <span class="tag">Connector</span>
-            <h3><a href="plugins/redis.html">Redis Streams</a></h3>
-            <p>Stream-backed dispatch with managed consumer group listener.</p>
-          </article>
-          <article class="card">
-            <span class="tag">Connector</span>
-            <h3><a href="plugins/jdbc-outbox.html">JDBC Outbox</a></h3>
-            <p>Transactional message persistence before broker publishing.</p>
-          </article>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Transport</th>
-                <th>Name</th>
-                <th>Module</th>
-                <th>Purpose</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>In-process</td>
-                <td><code>sync</code></td>
-                <td><code>messenger-core</code></td>
-                <td>Default local dispatch for handlers. Queries always use this path.</td>
-              </tr>
-              <tr>
-                <td>RabbitMQ</td>
-                <td><code>rabbitmq</code></td>
-                <td><code>messenger-transport-rabbitmq</code></td>
-                <td>Publishes <code>TransportMessage</code> to exchanges and consumes queues back into handlers.</td>
-              </tr>
-              <tr>
-                <td>Kafka / Redpanda</td>
-                <td><code>kafka</code></td>
-                <td><code>messenger-transport-kafka</code></td>
-                <td>Uses Spring Kafka templates, listeners, consumer groups, topics, and headers.</td>
-              </tr>
-              <tr>
-                <td>Redis Streams</td>
-                <td><code>redis</code></td>
-                <td><code>messenger-transport-redis</code></td>
-                <td>Stream publishing with managed consumer group listener and ACK support.</td>
-              </tr>
-              <tr>
-                <td>JDBC outbox</td>
-                <td><code>pg-outbox</code></td>
-                <td><code>messenger-transport-jdbc-outbox</code></td>
-                <td>Stores messages in <code>messenger_outbox</code> inside the database transaction.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
+        <section class="doc-section" id="messages">
+          <h2>Messages</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Bus</th>
+                  <th>Handler Count</th>
+                  <th>Result</th>
+                  <th>Purpose</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>Command&lt;R&gt;</code></td>
+                  <td><code>CommandBus</code></td>
+                  <td>Exactly one</td>
+                  <td>Optional result</td>
+                  <td>Express an intention to modify state.</td>
+                </tr>
+                <tr>
+                  <td><code>Query&lt;R&gt;</code></td>
+                  <td><code>QueryBus</code></td>
+                  <td>Exactly one</td>
+                  <td>Required result</td>
+                  <td>Read application state synchronously.</td>
+                </tr>
+                <tr>
+                  <td><code>Event</code></td>
+                  <td><code>EventBus</code></td>
+                  <td>Zero, one, or many</td>
+                  <td>No result</td>
+                  <td>Describe a business fact that already happened.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-      <section class="section" id="transport-message">
-        <h2>Transport Message Format</h2>
-        <p class="section-intro">
-          Broker adapters move a <code>TransportMessage</code>. Consumers convert the payload back to the declared Java type
-          and dispatch it to the matching local handler.
-        </p>
-        <div class="split">
+        <section class="doc-section" id="handlers">
+          <h2>Handlers</h2>
+          <p>
+            Handlers are regular Spring beans annotated with Messenger annotations. The scanner validates
+            method signatures during startup and fails fast on invalid configuration.
+          </p>
           <div class="terminal">
-            <div class="terminal-bar" aria-hidden="true">
-              <span class="dot"></span>
-              <span class="dot"></span>
-              <span class="dot"></span>
-            </div>
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>@CommandHandler
+public class SendWelcomeEmailCommandHandler {
+    public Void handle(SendWelcomeEmail command) {
+        // send email
+        return null;
+    }
+}
+
+@EventHandler
+public class SendWelcomeEmailHandler {
+    public void handle(UserRegistered event) {
+        // react to event
+    }
+}</code></pre>
+          </div>
+        </section>
+
+        <section class="doc-section" id="middleware">
+          <h2>Middleware</h2>
+          <p>
+            Middleware runs around dispatch before the final local handler or transport. It is useful for validation,
+            transactions, logging, authorization, observability, retry, and custom policies.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>public interface MessageMiddleware {
+    Object invoke(MessageEnvelope envelope, MessageHandler next);
+}</code></pre>
+          </div>
+        </section>
+
+        <section class="doc-section" id="routing">
+          <h2>Routing</h2>
+          <p>
+            Routing supports simple class names and fully qualified class names. Use fully qualified names when
+            two messages share the same simple name.
+          </p>
+          <div class="option-list">
+            <div class="option"><code>sync</code><span>Local in-process dispatch.</span></div>
+            <div class="option"><code>rabbitmq</code><span>Route to RabbitMQ exchange/routing key.</span></div>
+            <div class="option"><code>kafka</code><span>Route to Kafka or Redpanda topic.</span></div>
+            <div class="option"><code>redis</code><span>Route to Redis Streams.</span></div>
+            <div class="option"><code>pg-outbox</code><span>Store in JDBC outbox table for later publishing.</span></div>
+          </div>
+        </section>
+
+        <section class="doc-section" id="transport-message">
+          <h2>TransportMessage</h2>
+          <p>
+            Broker connectors send a <code>TransportMessage</code>. Consumers reconstruct the payload from
+            <code>messageType</code>, then dispatch it through the incoming dispatcher.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
             <pre><code>{
   "messageType": "com.acme.UserRegistered",
   "busType": "EVENT",
@@ -379,184 +297,114 @@ public class SendWelcomeEmailHandler {
   }
 }</code></pre>
           </div>
-          <div class="card">
-            <h3>Headers</h3>
-            <ul class="check-list">
-              <li><code>messenger_message_id</code></li>
-              <li><code>messenger_correlation_id</code></li>
-              <li><code>messenger_causation_id</code></li>
-              <li><code>messenger_bus_type</code></li>
-              <li><code>messenger_message_type</code></li>
-            </ul>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section class="section" id="outbox">
-        <h2>JDBC Outbox</h2>
-        <p class="section-intro">
-          The outbox stores messages in the same database transaction as business changes.
-          A publisher then forwards pending rows to the configured target transport.
-        </p>
-        <div class="flow" aria-label="Outbox flow">
-          <div class="flow-step">
-            <strong>Command handler</strong>
-            <span>Saves business state and publishes an event.</span>
+        <section class="doc-section" id="connectors">
+          <h2>Connectors</h2>
+          <p>
+            Each connector has its own reference page with installation, configuration, options, usage examples,
+            consumer behavior, and limitations.
+          </p>
+          <div class="cards four">
+            <article class="card">
+              <span class="tag">Connector</span>
+              <h3><a href="plugins/rabbitmq.html">RabbitMQ</a></h3>
+              <p>Queue-backed async messages using Spring AMQP.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Connector</span>
+              <h3><a href="plugins/kafka.html">Kafka / Redpanda</a></h3>
+              <p>Topic-backed messages using Spring Kafka.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Connector</span>
+              <h3><a href="plugins/redis.html">Redis Streams</a></h3>
+              <p>Stream-backed messages with consumer groups.</p>
+            </article>
+            <article class="card">
+              <span class="tag">Connector</span>
+              <h3><a href="plugins/jdbc-outbox.html">JDBC Outbox</a></h3>
+              <p>Transactional persistence before publishing.</p>
+            </article>
           </div>
-          <div class="flow-step">
-            <strong>Outbox transport</strong>
-            <span>Writes the event to <code>messenger_outbox</code>.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Commit</strong>
-            <span>Business row and outbox row succeed or fail together.</span>
-          </div>
-          <div class="flow-step">
-            <strong>Publisher</strong>
-            <span>Reads pending rows, forwards them, and marks them published or failed.</span>
-          </div>
-        </div>
-        <div class="terminal">
-          <div class="terminal-bar" aria-hidden="true">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-          <pre><code>messenger:
-  transports:
-    jdbc-outbox:
-      enabled: true
-      initialize-schema: true
-      table-name: messenger_outbox
-      publisher:
-        enabled: true
-        batch-size: 50
-        max-attempts: 3
-        target-transport: kafka</code></pre>
-        </div>
-      </section>
+        </section>
 
-      <section class="section" id="example">
-        <h2>Complete Spring Boot Example</h2>
-        <p class="section-intro">
-          The repository includes <code>spring-messenger-example</code>, a runnable app with one global configuration:
-          sync command/query, JDBC outbox, RabbitMQ command, and Kafka/Redpanda command.
-        </p>
-        <div class="cards two">
-          <article class="card">
-            <h3>Run the app</h3>
-            <p>The default endpoints are <code>localhost:5672</code> for RabbitMQ and <code>localhost:9092</code> for Kafka/Redpanda.</p>
-            <pre><code>./gradlew :spring-messenger-example:bootRun</code></pre>
-          </article>
-          <article class="card">
-            <h3>Run broker tests</h3>
-            <p>Testcontainers starts PostgreSQL, RabbitMQ, and Redpanda to validate real message paths.</p>
-            <pre><code>./gradlew :spring-messenger-example:test --tests '*ContainerTest'</code></pre>
-          </article>
-        </div>
-        <div class="terminal">
-          <div class="terminal-bar" aria-hidden="true">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
-          </div>
-          <pre><code>messenger:
-  routing:
-    commands:
-      RegisterUser: sync
-      SendWelcomeEmail: rabbitmq
-      RebuildUserSearchIndex: kafka
-    events:
-      UserRegistered: pg-outbox</code></pre>
-        </div>
-      </section>
+        <section class="doc-section" id="example">
+          <h2>Spring Boot Example</h2>
+          <p>
+            The repository includes <code>spring-messenger-example</code>, a complete app using sync, outbox,
+            RabbitMQ, and Kafka/Redpanda in one configuration.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>./gradlew :spring-messenger-example:bootRun
 
-      <section class="section" id="testing">
-        <h2>Testing Helpers</h2>
-        <p class="section-intro">
-          <code>messenger-test</code> is designed for application tests. It is different from the sample app:
-          it gives reusable test primitives.
-        </p>
-        <div class="cards">
-          <article class="card">
-            <h3>Fake buses</h3>
-            <p>Use <code>FakeCommandBus</code> and <code>FakeQueryBus</code> to capture dispatched messages and configure return values.</p>
-          </article>
-          <article class="card">
-            <h3>Event recorder</h3>
-            <p>Use <code>RecordingEventBus</code> to verify events published by a handler without starting Spring.</p>
-          </article>
-          <article class="card">
-            <h3>Assertions</h3>
-            <p>Use <code>MessengerAssertions.assertThat(...)</code> for fluent event assertions.</p>
-          </article>
-        </div>
-        <div class="terminal">
-          <div class="terminal-bar" aria-hidden="true">
-            <span class="dot"></span>
-            <span class="dot"></span>
-            <span class="dot"></span>
+./gradlew :spring-messenger-example:test --tests '*ContainerTest'</code></pre>
           </div>
-          <pre><code>RecordingEventBus eventBus = new RecordingEventBus();
+        </section>
+
+        <section class="doc-section" id="testing">
+          <h2>Testing</h2>
+          <p>
+            The <code>messenger-test</code> module gives reusable utilities for app tests: fake command/query buses,
+            recording event bus, event assertions, and handler helpers.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar" aria-hidden="true"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+            <pre><code>RecordingEventBus eventBus = new RecordingEventBus();
 RegisterUserHandler handler = new RegisterUserHandler(repository, eventBus);
 
 handler.handle(new RegisterUser("john@example.com", "John"));
 
-assertThat(eventBus)
-    .hasPublished(UserRegistered.class)
-    .hasPublishedSatisfying(UserRegistered.class, event -&gt;
-        assertEquals("john@example.com", event.email())
-    );</code></pre>
-        </div>
-      </section>
+assertThat(eventBus).hasPublished(UserRegistered.class);</code></pre>
+          </div>
+        </section>
 
-      <section class="section" id="status">
-        <h2>Status And Scope</h2>
-        <p class="section-intro">
-          The current project is a <code>0.1.0-SNAPSHOT</code>. The core programming model is in place,
-          but production hardening is still ongoing.
-        </p>
-        <div class="cards two">
-          <article class="card">
-            <h3>Implemented</h3>
-            <ul class="check-list">
-              <li>CommandBus, QueryBus, EventBus</li>
-              <li>Spring annotations and handler scanning</li>
-              <li>Middleware chain and Bean Validation</li>
-              <li>Routing and transport SPI</li>
-              <li>RabbitMQ, Kafka, Redis, and JDBC outbox adapters</li>
-              <li>Test helpers and Testcontainers integration tests</li>
-            </ul>
-          </article>
-          <article class="card">
-            <h3>Not v1 yet</h3>
-            <ul class="check-list">
-              <li>DLQ handling</li>
-              <li>Serialization strategy customization</li>
-              <li>Micrometer and tracing integration</li>
-              <li>Async local executor dispatch</li>
-              <li>Schema alias/version contract for non-Java interoperability</li>
-            </ul>
-          </article>
-        </div>
-      </section>
+        <section class="doc-section" id="status">
+          <h2>Status & Scope</h2>
+          <div class="cards two">
+            <article class="card">
+              <h3>Implemented</h3>
+              <ul class="check-list">
+                <li>CommandBus, QueryBus, EventBus</li>
+                <li>Spring handler scanning</li>
+                <li>Middleware and validation</li>
+                <li>RabbitMQ, Kafka, Redis, JDBC outbox</li>
+                <li>Testcontainers integration tests</li>
+              </ul>
+            </article>
+            <article class="card">
+              <h3>Not v1 yet</h3>
+              <ul class="check-list">
+                <li>DLQ abstraction</li>
+                <li>Serialization strategy customization</li>
+                <li>Micrometer/tracing integration</li>
+                <li>Async local executor dispatch</li>
+              </ul>
+            </article>
+          </div>
+        </section>
 
-      <section class="section" id="pages">
-        <h2>Publish On GitHub Pages</h2>
-        <p class="section-intro">
-          This documentation is static and lives in <code>docs/</code>. In GitHub repository settings,
-          enable Pages with the source set to the main branch and the <code>/docs</code> folder.
-        </p>
-        <div class="notice">
-          The repository can live under <code>CorentinGuerrero/spring-application-messenger</code>,
-          while the public Maven coordinates and Java packages stay neutral with
-          <code>io.github.applicationmessenger</code>.
-        </div>
-      </section>
+        <section class="doc-section" id="github-pages">
+          <h2>GitHub Pages</h2>
+          <p>
+            This documentation is static and lives in <code>docs/</code>. Enable GitHub Pages from the main branch
+            with the <code>/docs</code> folder as source.
+          </p>
+        </section>
+      </article>
+
+      <aside class="docs-toc" aria-label="Table of contents">
+        <strong>On this page</strong>
+        <a href="#overview">Overview</a>
+        <a href="#installation">Installation</a>
+        <a href="#quickstart">Quickstart</a>
+        <a href="#configuration">Configuration</a>
+        <a href="#messages">Messages</a>
+        <a href="#handlers">Handlers</a>
+        <a href="#routing">Routing</a>
+        <a href="#connectors">Connectors</a>
+      </aside>
     </main>
-
-    <footer class="footer">
-      Spring Application Messenger is lightweight, explicit, Spring-native, and test-friendly.
-    </footer>
   </body>
 </html>
